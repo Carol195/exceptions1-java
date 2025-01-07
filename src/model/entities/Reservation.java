@@ -1,11 +1,12 @@
 package model.entities;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.SimpleFormatter;
 
-public class Reservation {
+public class Reservation{
 
     private Integer roomNumber;
     private Date checkin;
@@ -42,9 +43,18 @@ public class Reservation {
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public void updateDates(Date checkin, Date checkout) {
+    public String updateDates(Date checkin, Date checkout) throws ParseException {
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        Date now = formato.parse("06/06/2018");
+        if(checkin.before(now) || checkout.before(now)){
+            return "Reservation dates for updates must be future dates";
+        }
+        if (!checkout.after(checkin)) {
+            return "Check-out date must be after check-in date";
+        }
         this.checkin = checkin;
         this.checkout = checkout;
+        return null;
     }
 
     @Override
